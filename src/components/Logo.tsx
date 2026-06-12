@@ -11,7 +11,7 @@ export const Logo: React.FC<LogoProps> = ({ className = '', size = 24, withBackg
     <div className={`relative flex items-center justify-center overflow-hidden rounded-lg ${className}`} style={{ width: size, height: size }}>
       <img 
         src="https://i.postimg.cc/yYSDXHm2/IMG-20260421-WA0036(2).jpg" 
-        alt="Bivaax-bx.trade Logo" 
+        alt="Bivaax Logo" 
         className="w-full h-full object-cover"
         referrerPolicy="no-referrer"
       />

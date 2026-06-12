@@ -1,6 +1,6 @@
 {
-  "name": "Bivaax-bx.trade",
-  "short_name": "Bivaax-bx.trade",
+  "name": "Bivaax",
+  "short_name": "Bivaax",
   "description": "Professional Binary Trading Platform",
   "start_url": "/trade",
   "display": "standalone",

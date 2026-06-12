@@ -12,6 +12,7 @@ import {
 } from 'firebase/auth';
 import { doc, setDoc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { getNextAffiliateId, getUserByAffiliateId } from '../lib/affiliate';
+import { convertToBase } from '../lib/currencies';
 import { Logo } from '../components/Logo';
 import { toast } from 'react-hot-toast';
 
@@ -82,7 +83,7 @@ export default function AuthPage() {
         await setDoc(userRef, {
           email: result.user.email,
           balance: 0.0,
-          demoBalance: 10000.0,
+          demoBalance: convertToBase(10000, currency),
           currency: currency,
           affiliateId: affiliateId,
           referredBy: referredBy,
@@ -168,7 +169,7 @@ export default function AuthPage() {
         await setDoc(doc(db, 'users', userCredential.user.uid), {
           email: userCredential.user.email,
           balance: 0.0,
-          demoBalance: 10000.0,
+          demoBalance: convertToBase(10000, currency),
           currency: currency,
           affiliateId: affiliateId,
           referredBy: referredBy,

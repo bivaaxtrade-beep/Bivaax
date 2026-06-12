@@ -3960,7 +3960,7 @@ const PROMOTED_ARTICLES = [
   useEffect(() => {
     const demoBalanceInUserCurrency = convertFromBase(demoBalance, userCurrency);
     if (accountType === 'demo' && demoBalanceInUserCurrency < minConvertedAmount && auth.currentUser) {
-        const rechargeAmount = 10000;
+        const rechargeAmount = convertToBase(10000, userCurrency);
         setDemoBalance(rechargeAmount);
         updateDoc(doc(db, "users", auth.currentUser.uid), {
             demoBalance: rechargeAmount
@@ -4639,14 +4639,15 @@ const PROMOTED_ARTICLES = [
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ 
-                  tradeId: trade.id
+                  tradeId: trade.id,
+                  currentMarketPrice: settlePrice
               })
           }).catch(err => {
               console.error("Secure single trade settlement request failed:", err);
           });
 
           if (won) {
-            updateBalance(returnAmt); // Optimistic UI update with zero delay
+            updateBalance(returnAmt, trade.accountType); // Optimistic UI update with zero delay
             if (isRecent) {
                 // toast.success(`Trade Won! +${userCurrency}${returnAmt.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`);
                 setTradeNotifications(prev => [{
@@ -4659,7 +4660,7 @@ const PROMOTED_ARTICLES = [
             }
             updateTournamentScore(returnAmt - trade.amount, true);
           } else if (tradeStatus === 'draw') {
-            updateBalance(trade.amount); // Optimistic UI update with zero delay
+            updateBalance(trade.amount, trade.accountType); // Optimistic UI update with zero delay
             if (isRecent) {
                 // toast.success(`Trade Closed (Draw). +${userCurrency}${trade.amount.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`);
                 setTradeNotifications(prev => [{
@@ -5346,7 +5347,7 @@ const PROMOTED_ARTICLES = [
 
     const newActiveTrades = [...activeTradesRef.current, newTrade];
 
-    updateBalance(-baseAmount);
+    updateBalance(-baseAmount, accountType);
     
     if (auth.currentUser) {
       try {
@@ -5388,7 +5389,7 @@ const PROMOTED_ARTICLES = [
         }
       } catch (err: any) {
         console.error("Trade placement or sync failed:", err);
-        updateBalance(baseAmount); // Revert local balance update
+        updateBalance(baseAmount, accountType); // Revert local balance update
         toast.error(err.message || "Failed to place trade on server. Verification failed.");
         setIsPlacingTrade(false);
         return;
@@ -5416,7 +5417,7 @@ const PROMOTED_ARTICLES = [
     } catch (error) {
        console.error("Trade entry failed:", error);
        toast.error("Internal error. Please refresh.");
-       updateBalance(baseAmount); // Revert local balance update
+       updateBalance(baseAmount, accountType); // Revert local balance update
     } finally {
        setIsPlacingTrade(false);
     }
@@ -6542,7 +6543,7 @@ const PROMOTED_ARTICLES = [
             <div className="flex md:hidden h-[64px] items-center justify-between px-6 border-b border-white/5 bg-[#1a1b1f] shrink-0">
                <div className="flex items-center gap-3">
                   <Logo size={26} />
-                  <span className="text-[22px] font-black tracking-tighter text-white">Bivaax-bx.trade</span>
+                  <span className="text-[22px] font-black tracking-tighter text-white">Bivaax</span>
                </div>
                <button onClick={() => setShowSidebar(false)} className="w-10 h-10 flex items-center justify-center bg-white/5 rounded-full text-gray-400 hover:text-white transition-colors active:scale-95">
                   <X size={20} />
@@ -8327,7 +8328,7 @@ const PROMOTED_ARTICLES = [
               <div className="space-y-3 font-sans">
                 <div className="flex justify-between items-center">
                   <label className="text-xs font-extrabold text-gray-400 uppercase tracking-widest">Trade Amount</label>
-                  <span className="text-[11px] font-mono text-gray-500">Balance: {userCurrency}{accountType === 'demo' ? demoBalance.toLocaleString() : realBalance.toLocaleString()}</span>
+                  <span className="text-[11px] font-mono text-gray-500">Balance: {formatWithCurrency(accountType === 'demo' ? demoBalance : realBalance, userCurrency)}</span>
                 </div>
                 
                 {/* Numeric Input container */}
@@ -8362,11 +8363,11 @@ const PROMOTED_ARTICLES = [
                   ))}
                   <button
                     onClick={() => {
-                      const currentBal = accountType === 'demo' ? demoBalance : realBalance;
+                      const currentBal = convertFromBase(accountType === 'demo' ? demoBalance : realBalance, userCurrency);
                       setCalcAmount(Math.floor(currentBal));
                     }}
                     className={`text-xs font-black py-2 rounded-lg border transition-all ${
-                      calcAmount === (accountType === 'demo' ? demoBalance : realBalance)
+                      calcAmount === Math.floor(convertFromBase(accountType === 'demo' ? demoBalance : realBalance, userCurrency))
                         ? "bg-[#ff4d4d] text-white border-[#ff4d4d]"
                         : "bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20"
                     }`}
@@ -13712,7 +13713,7 @@ const PROMOTED_ARTICLES = [
              <div className="flex items-center gap-4">
                <div className="flex flex-col items-end hidden md:flex">
                   <span className="text-xs text-gray-500 font-medium tracking-wide uppercase">Demo account</span>
-                  <span className="text-base font-black text-black leading-none">৳{demoBalance.toFixed(2)}</span>
+                  <span className="text-base font-black text-black leading-none">{formatWithCurrency(demoBalance, userCurrency)}</span>
                </div>
                <button onClick={() => setActiveTab("trade")} className="bg-[#fcd535] hover:bg-[#ebd04f] text-black px-6 py-2 rounded-lg font-bold transition-all text-sm uppercase tracking-wide ml-2 md:ml-0">
                  Trading

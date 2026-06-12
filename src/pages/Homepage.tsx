@@ -16,7 +16,7 @@ export default function Homepage() {
   const faqData = [
     {
       question: "What is Bivaax and how does it work?",
-      answer: "Bivaax-bx.trade is a modern high-performance trading platform that allows you to speculate on price movements of various assets (including major currency pairs, commodities, and synthetic indices) with high speed and payout yields up to 95%."
+      answer: "Bivaax is a modern high-performance trading platform that allows you to speculate on price movements of various assets (including major currency pairs, commodities, and synthetic indices) with high speed and payout yields up to 95%."
     },
     {
       question: "What is the minimum deposit and minimum investment amount?",
@@ -625,7 +625,7 @@ export default function Homepage() {
 
         <div className="bg-black/20 py-8 px-4">
           <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="text-gray-600 text-xs font-medium">© 2014-2026 Bivaax-bx.trade Trading Platform. All rights reserved.</p>
+            <p className="text-gray-600 text-xs font-medium">© 2014-2026 Bivaax Trading Platform. All rights reserved.</p>
             <div className="flex items-center gap-8">
               <a href="#" className="text-gray-600 hover:text-white text-xs font-bold transition-colors">Privacy Policy</a>
               <a href="#" className="text-gray-600 hover:text-white text-xs font-bold transition-colors">Terms Conditions</a>

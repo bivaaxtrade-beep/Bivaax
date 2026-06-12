@@ -1621,12 +1621,12 @@ async function processRevenueShare(userId: string, lostAmount: number, currency:
   });
 
   app.post('/api/trade/settle-secure', async (req, res) => {
-    const { tradeId } = req.body;
+    const { tradeId, currentMarketPrice } = req.body;
     if (!tradeId) return res.status(400).json({ error: 'Missing tradeId' });
     if (!db || dbWriteAccessDenied) return res.status(500).json({ error: 'Database access denied' });
 
     try {
-      const result = await settleTradeAtomically(tradeId);
+      const result = await settleTradeAtomically(tradeId, currentMarketPrice);
       if (result.error) return res.status(404).json({ error: result.error });
 
       // Emit sync events if it was actually settled by this request

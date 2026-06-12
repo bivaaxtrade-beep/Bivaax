@@ -13,7 +13,7 @@ export default function Navbar() {
 
   return (
     <nav className="bg-[#1a1b1f] border-b border-[#2c2d32] h-16 flex items-center justify-between px-6">
-      <div className="text-[#ffe24c] font-black text-xl italic">Bivaax-bx.trade</div>
+      <div className="text-[#ffe24c] font-black text-xl italic">Bivaax</div>
       <div className="flex gap-6">
         {navItems.map((item) => (
           <NavLink
