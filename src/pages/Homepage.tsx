@@ -233,7 +233,7 @@ export default function Homepage() {
                    <div className="mt-12 flex items-center justify-between">
                       <div>
                         <p className="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-1">Weekly Profit</p>
-                        <p className="text-3xl font-black text-white tracking-tighter">৳1,245,600</p>
+                        <p className="text-3xl font-black text-white tracking-tighter">$1,245,600</p>
                       </div>
                       <TrendingUp size={48} className="text-[#ffcf00] opacity-20" />
                    </div>
