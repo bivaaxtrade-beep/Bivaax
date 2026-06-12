@@ -5418,6 +5418,7 @@ const PROMOTED_ARTICLES = [
     } catch (error) {
        console.error("Trade entry failed:", error);
        toast.error("Internal error. Please refresh.");
+       updateBalance(baseAmount); // Revert local balance update
     } finally {
        setIsPlacingTrade(false);
     }

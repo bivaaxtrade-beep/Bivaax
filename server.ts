@@ -1438,9 +1438,11 @@ async function processRevenueShare(userId: string, lostAmount: number, currency:
           transaction.update(pRef, { score: admin.firestore.FieldValue.increment(payoutAmount) });
         } else {
           const userRef = db.collection('users').doc(trade.userId);
-          const balanceField = (trade.accountType === 'demo' || trade.accountType === 'demo_account') ? 'demoBalance' : 'balance';
+          console.log(`[Settlement] pre-balanceField calculation for user ${trade.userId}. Trade AccountType is: ${trade.accountType}`);
+          const balanceField = (trade.accountType === 'demo' || trade.accountType === 'demo_account') ? 'demoBalance' : 
+                               (trade.accountType === 'tournament') ? 'tournamentBalance' : 'balance';
+          console.log(`[Settlement] Incremented ${balanceField} by ${payoutAmount} for user ${trade.userId}. Trade AccountType is: ${trade.accountType}`);
           transaction.update(userRef, { [balanceField]: admin.firestore.FieldValue.increment(payoutAmount) });
-          console.log(`[Settlement] Incremented ${balanceField} by ${payoutAmount} for user ${trade.userId}`);
         }
       } else if (newStatus === 'lost' && (trade.accountType === 'real' || !trade.accountType)) {
         // Kick off rev share
@@ -1578,7 +1580,8 @@ async function processRevenueShare(userId: string, lostAmount: number, currency:
                       const userDoc = await transaction.get(userRef);
                       if (!userDoc.exists) throw new Error('User not found');
                       
-                      const balanceField = accountType === 'real' ? 'balance' : 'demoBalance';
+                      const balanceField = accountType === 'real' ? 'balance' : 
+                                           accountType === 'tournament' ? 'tournamentBalance' : 'demoBalance';
                       const currentBalance = userDoc.data()?.[balanceField] || 0;
                       
                       if (currentBalance < amount) {

@@ -1,9 +1,10 @@
 {
-  "projectId": "bvaax-trade",
-  "appId": "1:1060740495013:web:60ab433b73e80025f67f4c",
-  "apiKey": "AIzaSyDkqHnpbs98ioSdzQeyIbHtylPsIugR9jg",
-  "authDomain": "bvaax-trade.firebaseapp.com",
-  "storageBucket": "bvaax-trade.firebasestorage.app",
-  "messagingSenderId": "1060740495013",
-  "measurementId": "G-7HKGL00M2J"
+  "projectId": "ai-studio-applet-webapp-6cd31",
+  "appId": "1:582388869549:web:bb6c339abc8346e173d924",
+  "apiKey": "AIzaSyCd8dyIznApbGuT9n_xpHmiYMfacLnv-mo",
+  "authDomain": "ai-studio-applet-webapp-6cd31.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-0b241b4d-4c35-43e1-b8bd-0f5c63d81b41",
+  "storageBucket": "ai-studio-applet-webapp-6cd31.firebasestorage.app",
+  "messagingSenderId": "582388869549",
+  "measurementId": ""
 }
