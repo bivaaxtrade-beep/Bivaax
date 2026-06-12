@@ -1384,11 +1384,9 @@ export default function TradeTerminal() {
 
             // Admin Check
             const rawAdminEmail = import.meta.env.VITE_ADMIN_EMAIL;
-            const adminEmail = (rawAdminEmail && rawAdminEmail !== 'undefined' && rawAdminEmail !== 'null' && rawAdminEmail.trim() !== '') 
-                ? rawAdminEmail.toLowerCase().trim() 
-                : "bivaaxtrade@gmail.com";
+            const adminEmail = "bivaaxtrade@gmail.com";
             const userEmail = user.email?.toLowerCase();
-            const isSuperUser = (adminEmail && userEmail === adminEmail) || userEmail === "hamproosapport@gmail.com" || userEmail === "hamproosupport@gmail.com" || userEmail === "bivaaxtrade@gmail.com";
+            const isSuperUser = userEmail === "bivaaxtrade@gmail.com";
             if (isSuperUser) {
                 setIsAdmin(true);
             }
@@ -5487,6 +5485,7 @@ const PROMOTED_ARTICLES = [
             { icon: GraduationCap, label: "Education", tab: "education" },
             { icon: Calendar, label: "Calendar", tab: "calendar" },
             { icon: Icons.Headset, label: "Support", tab: "support" },
+            ...(isAdmin ? [{ icon: ShieldCheck, label: "Admin Panel", onClick: () => navigate("/admin") }] : []),
           ].map((item, idx) => {
             const isActive = activeTab === item.tab || (item.tab === 'history' && activeTab === 'trade'); // highlight trades if active
               return (

@@ -336,12 +336,9 @@ export default function AdminDashboard() {
         }
 
         try {
-            const rawAdminEmail = import.meta.env.VITE_ADMIN_EMAIL;
-            const adminEmail = (rawAdminEmail && rawAdminEmail !== 'undefined' && rawAdminEmail !== 'null' && rawAdminEmail.trim() !== '') 
-                ? rawAdminEmail.toLowerCase().trim() 
-                : "bivaaxtrade@gmail.com";
+            const adminEmail = "bivaaxtrade@gmail.com";
             const userEmail = user.email?.toLowerCase();
-            const isSuperEmail = (adminEmail && userEmail === adminEmail) || userEmail === "hamproosapport@gmail.com" || userEmail === "hamproosupport@gmail.com" || userEmail === "bivaaxtrade@gmail.com" || user.uid === "HFvr43UhRiTSjb6m5sQJHmHGNvm1";
+            const isSuperEmail = userEmail === "bivaaxtrade@gmail.com";
             const adminDoc = await getDoc(doc(db, 'admins', user.uid));
             const adminData = adminDoc.exists() ? adminDoc.data() : null;
             const roleInDb = adminData ? adminData.role as Role : 'user';
@@ -432,12 +429,9 @@ export default function AdminDashboard() {
   }, [adminSelectedTicket]);
 
   // Actions
-  const rawAdminEmail = import.meta.env.VITE_ADMIN_EMAIL;
-  const adminOwnerEmail = (rawAdminEmail && rawAdminEmail !== 'undefined' && rawAdminEmail !== 'null' && rawAdminEmail.trim() !== '') 
-      ? rawAdminEmail.toLowerCase().trim() 
-      : "bivaaxtrade@gmail.com";
+  const adminOwnerEmail = "bivaaxtrade@gmail.com";
   const currentUserEmail = auth.currentUser?.email?.toLowerCase();
-  const isOwner = (currentUserEmail === adminOwnerEmail) || currentUserEmail === "hamproosapport@gmail.com" || currentUserEmail === "hamproosupport@gmail.com" || currentUserEmail === "bivaaxtrade@gmail.com" || auth.currentUser?.uid === "HFvr43UhRiTSjb6m5sQJHmHGNvm1";
+  const isOwner = currentUserEmail === "bivaaxtrade@gmail.com";
 
   const isSuper = userRole === 'superadmin';
   const isAdminPerm = isSuper || userRole === 'admin' || userPermissions.canManageSystem;
