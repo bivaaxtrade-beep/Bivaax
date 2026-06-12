@@ -1,0 +1,157 @@
+{
+  "entities": {
+    "Candle": {
+      "title": "Candle",
+      "description": "Candlestick data for a market pair",
+      "type": "object",
+      "properties": {
+        "pair": { "type": "string" },
+        "time": { "type": "number" },
+        "open": { "type": "number" },
+        "high": { "type": "number" },
+        "low": { "type": "number" },
+        "close": { "type": "number" }
+      },
+      "required": ["pair", "time", "open", "high", "low", "close"]
+    },
+    "Trade": {
+      "title": "Trade",
+      "description": "Trading transaction data",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "asset": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string" },
+        "status": { "type": "string" },
+        "entryPrice": { "type": "number" },
+        "exitPrice": { "type": "number" },
+        "expirationTime": { "type": "number" },
+        "result": { "type": "string" },
+        "payout": { "type": "number" },
+        "accountType": { "type": "string" }
+      },
+      "required": ["userId", "asset", "amount", "type", "status", "entryPrice", "expirationTime", "accountType"]
+    },
+    "User": {
+      "title": "User",
+      "description": "User profile and balance data",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "balance": { "type": "number" },
+        "demoBalance": { "type": "number" },
+        "role": { "type": "string" },
+        "uid": { "type": "string" },
+        "referredBy": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["email", "balance", "demoBalance"]
+    },
+    "News": {
+      "title": "News",
+      "description": "Financial news articles",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "date": { "type": "number" },
+        "image": { "type": "string" }
+      }
+    },
+    "Tournament": {
+      "title": "Tournament",
+      "description": "Trading tournament details",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "prizePool": { "type": "number" },
+        "startDate": { "type": "number" },
+        "endDate": { "type": "number" },
+        "status": { "type": "string" }
+      }
+    },
+    "DepositMethod": {
+      "title": "DepositMethod",
+      "description": "Available payment methods",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "provider": { "type": "string" },
+        "logo": { "type": "string" },
+        "category": { "type": "string" }
+      }
+    },
+    "SupportTicket": {
+      "title": "SupportTicket",
+      "description": "User support inquiries",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "subject": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "updatedAt": { "type": "number" }
+      }
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Financial transactions (deposits/withdrawals)",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "status": { "type": "string" },
+        "type": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "method": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "candles/{pair}/data": {
+      "schema": "Candle",
+      "description": "Candlestick data for a specific pair"
+    },
+    "trades/{tradeId}": {
+      "schema": "Trade",
+      "description": "Trade records"
+    },
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User data"
+    },
+    "news/{newsId}": {
+      "schema": "News",
+      "description": "News articles"
+    },
+    "tournaments/{tournamentId}": {
+      "schema": "Tournament",
+      "description": "Tournament data"
+    },
+    "depositMethods/{methodId}": {
+      "schema": "DepositMethod",
+      "description": "Payment methods"
+    },
+    "tickets/{ticketId}": {
+      "schema": "SupportTicket",
+      "description": "Support tickets"
+    },
+    "deposits/{depositId}": {
+      "schema": "Transaction",
+      "description": "Deposit requests"
+    },
+    "withdrawals/{withdrawalId}": {
+      "schema": "Transaction",
+      "description": "Withdrawal requests"
+    },
+    "education/{eduId}": {
+      "schema": "object",
+      "description": "Educational content"
+    },
+    "promotions/{promoId}": {
+      "schema": "object",
+      "description": "Promotional banners"
+    }
+  }
+}

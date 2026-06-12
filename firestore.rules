@@ -1,0 +1,189 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Identity & Admin Functions ---
+    function isSignedIn() { return request.auth != null; }
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function isAdmin() {
+      return isSignedIn() && (
+        (request.auth.token.email != null && (request.auth.token.email == "hamproosapport@gmail.com" || request.auth.token.email == "bivaaxtrade@gmail.com")) ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    // --- Payload Helpers ---
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // --- 1. CONFIGURATION & PUBLIC DATA ---
+    
+    // Global UI configurations, static assets and public landing pages
+    match /app_config/{id} {
+      allow read: if true;
+      allow write: if isAdmin() || id == 'counters';
+    }
+    
+    match /promotions/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /promoMaterials/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /news/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /education/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /pages/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- 2. FINANCIAL DATA ---
+
+    // Deposit Methods - defining what's available
+    match /depositMethods/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Deposits - actual transactions
+    match /deposits/{depositId} {
+      allow create: if isSignedIn() && (isAdmin() || incoming().userId == request.auth.uid);
+      allow read: if isSignedIn() && (isAdmin() || resource == null || request.auth.uid == resource.data.userId);
+      allow update: if isAdmin() || (isOwner(existing().userId) && existing().status == 'pending');
+      allow delete: if isAdmin();
+    }
+
+    // Withdrawals
+    match /withdrawals/{withdrawalId} {
+      allow create: if isSignedIn() && (isAdmin() || incoming().userId == request.auth.uid);
+      allow read: if isSignedIn() && (isAdmin() || resource == null || request.auth.uid == resource.data.userId);
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // --- 3. TRADING & MARKET DATA ---
+
+    match /trades/{tradeId} {
+      allow create: if isSignedIn() && (isAdmin() || incoming().userId == request.auth.uid);
+      allow update, read: if isSignedIn() && (isAdmin() || (resource != null && resource.data.userId == request.auth.uid));
+      allow delete: if isAdmin();
+    }
+
+    match /markets/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Technical analysis, master traders & signals
+    match /signals/{id} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /masterTraders/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // --- 4. USER PROFILES & SOCIAL ---
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && (
+        isAdmin() || 
+        isOwner(userId) || 
+        (resource != null && resource.data.get('referredByUid', '') == request.auth.uid)
+      );
+      allow write: if isSignedIn() && (isAdmin() || isOwner(userId));
+
+      match /priceAlerts/{alertId} {
+        allow read, write: if isSignedIn() && (isAdmin() || isOwner(userId));
+      }
+      
+      match /activeCopies/{copyId} {
+        allow read, write: if isSignedIn() && (isAdmin() || isOwner(userId));
+      }
+
+      match /notifications/{notifId} {
+        allow read, write: if isSignedIn() && (isAdmin() || isOwner(userId));
+      }
+
+      match /transactions/{txId} {
+        allow read, write: if isSignedIn() && (isAdmin() || isOwner(userId));
+      }
+    }
+
+    // --- 5. SUPPORT & SYSTEM ---
+
+    match /tickets/{ticketId} {
+      allow create: if isSignedIn() && (isAdmin() || incoming().userId == request.auth.uid);
+      allow read, update: if isSignedIn() && (isAdmin() || isOwner(existing().get('userId', '')));
+      allow delete: if isAdmin();
+
+      match /messages/{messageId} {
+        allow read: if isSignedIn() && (isAdmin() || get(/databases/$(database)/documents/tickets/$(ticketId)).data.userId == request.auth.uid);
+        allow create: if isSignedIn() && (isAdmin() || get(/databases/$(database)/documents/tickets/$(ticketId)).data.userId == request.auth.uid);
+        allow update, delete: if isAdmin();
+      }
+    }
+
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /systemLogs/{id} {
+      allow read, write: if isAdmin();
+    }
+
+    match /affiliate_payouts/{id} {
+      allow create: if isSignedIn() && (isAdmin() || incoming().userId == request.auth.uid);
+      allow read: if isSignedIn() && (isAdmin() || isOwner(existing().get('userId', '')));
+      allow write: if isAdmin();
+    }
+
+    match /affiliate_commissions/{id} {
+      allow read: if isSignedIn() && (isAdmin() || resource == null || (existing().get('referrerUid', '') == request.auth.uid));
+      allow write: if isAdmin();
+    }
+
+    match /affiliate_campaigns/{id} {
+      allow create: if isSignedIn() && (isAdmin() || incoming().userId == request.auth.uid);
+      allow read, write: if isSignedIn() && (isAdmin() || isOwner(existing().get('userId', '')));
+    }
+
+    match /kycRequests/{requestId} {
+      allow create: if isSignedIn() && (isAdmin() || request.auth.uid == requestId || incoming().get('userId', '') == request.auth.uid);
+      allow read: if isSignedIn() && (isAdmin() || isOwner(requestId) || isOwner(existing().get('userId', '')));
+      allow update, delete: if isAdmin();
+    }
+
+    // --- 6. TOURNAMENTS ---
+
+    match /tournaments/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+      
+      match /participants/{participantId} {
+        allow read: if isSignedIn();
+        allow write: if isOwner(participantId) || isAdmin();
+      }
+    }
+
+    // Collection Group Queries
+    match /{path=**}/participants/{pId} {
+      allow read: if isSignedIn();
+    }
+  }
+}

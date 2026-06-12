@@ -1,0 +1,8 @@
+{
+  "name": "Bivaax-bx.trade",
+  "description": "A professional-grade binary trading platform prototype with high-precision charts, real-time trading interface, and administrative controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
